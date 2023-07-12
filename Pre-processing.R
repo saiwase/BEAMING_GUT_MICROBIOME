@@ -47,7 +47,7 @@ ntaxa(BEAMING_phy3) # 4341 - after removing non-bacteria
 #-----------------------------------------------------------------------------------------------------
 # Inspect NC and PC for possible contamination ----
 #-----------------------------------------------------------------------------------------------------
-sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
+sample_data(BEAMING_phy3)$Sample_or_Control <- case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
                                                                                                 "M37-NC0", "M37-NC1", "M37-NC2", "M38-NC0", "M38-NC1", "M38-NC2")) ~"NegControl", 
                                                           (sample_data(BEAMING_phy3)$PID %in% c("M33-PC", "M35-PC", "M37-PC", "M38-PC")) ~ "PosControl", 
                                                           TRUE ~ "Sample")
@@ -114,7 +114,7 @@ BEAMING_phy3
 head(sample_data(BEAMING_phy3))
 ## ----see-depths------------------------------------------------------------
 # annotate PC/NC samples
-sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
+sample_data(BEAMING_phy3)$Sample_or_Control <- case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
                                                                                                 "M37-NC0", "M37-NC1", "M37-NC2", "M38-NC0", "M38-NC1", "M38-NC2")) ~"NegControl", 
                                                           (sample_data(BEAMING_phy3)$PID %in% c("M33-PC", "M35-PC", "M37-PC", "M38-PC")) ~ "PosControl", 
                                                           TRUE ~ "Sample")
@@ -190,7 +190,7 @@ Samples_toRemove <- append(Samples_toRemove, c("M33-PC", "M35-PC", "M37-PC",
 BEAMING_phy4 <- subset_samples(BEAMING_phy3.noncontam, !(Sample_ID2 %in% Samples_toRemove))  
 
 #-----------------------------------------------------------------------------------------------------
-#  standardise and filtering, prepare for the analysis ----
+# Standardise and filtering, prepare for the analysis ----
 #-----------------------------------------------------------------------------------------------------
 ## standardise
 total = median(sample_sums(BEAMING_phy4))
