@@ -128,6 +128,7 @@ Fig2B = p1 + theme_bw() +
 
 Fig2B
 
+
 ### PERMANOVA
 diss <- phyloseq::distance(Phy.f_std, "bray", parallel = TRUE)
 Phy.f_std_df <- data.frame(row.names = sample_names(Phy.f_std), sample_data(Phy.f_std)) 
