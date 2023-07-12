@@ -1,5 +1,4 @@
 # Script for DADA2
-
 #-----------------------------------------------------------------------------------------------------
 # Load packages ----
 #-----------------------------------------------------------------------------------------------------
@@ -30,20 +29,19 @@ length(sample.names)
 sample.names[duplicated(sample.names)]
 
 #-----------------------------------------------------------------------------------------------------
-# Quality control of data  ----
+# Quality control  ----
 #-----------------------------------------------------------------------------------------------------
 plotQualityProfile(fnFs[40:50])  
 plotQualityProfile(fnRs[40:50])
 
 #-----------------------------------------------------------------------------------------------------
-#  Filter and trim  ----
+# Filter and trim  ----
 #-----------------------------------------------------------------------------------------------------
 filtFs <- file.path(path,"filtered",paste0(sample.names,"_F_filt.fastq.gz"))
 filtRs <- file.path(path,"filtered",paste0(sample.names,"_R_filt.fastq.gz"))
 names(filtFs) <- sample.names
 names(filtRs) <- sample.names
 
-# filter and trim
 # standard filtering parameters: maxN=0 (DADA2 requires no Ns), truncQ=2, rm.phix=TRUE and maxEE=2
 # truncLen must be large enough to maintain 20 + biological.length.variation nucleotides between them
 out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen = c(265,210),
@@ -56,37 +54,37 @@ print(df)
 write_xlsx(df,"./DADA2_output.xlsx")
 
 #-----------------------------------------------------------------------------------------------------
-#  Learn the Error Rates  ----
+# Learn the Error Rates  ----
 #-----------------------------------------------------------------------------------------------------
 # "learnErrors method" learns this error model from the data, by alternating estimation of the error rates and inference of sample composition until they converge on a jointly consistent solution.
 errF <- learnErrors(filtFs, multithread = TRUE)
 errR <- learnErrors(filtRs,multithread = TRUE)
 
-#check the error rates
+# check the error rates
 plotErrors(errF, nominalQ = TRUE)
 
 #-----------------------------------------------------------------------------------------------------
-#  Sample Inference  ----
+# Sample Inference  ----
 #-----------------------------------------------------------------------------------------------------
-# Apply the core sample inference algorithm to the filtered and trimmed sequence data.
+# apply the core sample inference algorithm to the filtered and trimmed sequence data.
 dadaFs <-dada(filtFs, err = errF, multithread = TRUE)
 dadaRs <-dada(filtRs, err = errR, multithread = TRUE)
 
-# Inspecting the result
+# inspecting the result
 dadaFs[[1]] 
 
 #-----------------------------------------------------------------------------------------------------
-#  Merge paired reads  ----
+# Merge paired reads  ----
 #-----------------------------------------------------------------------------------------------------
-# Merge the forward and reverse reads together to obtain the full denoised sequences
-# By default, only output if the forward and reverse reads overlap by at least 12 bases
+# merge the forward and reverse reads together to obtain the full denoised sequences
+# by default, only output if the forward and reverse reads overlap by at least 12 bases
 mergers <- mergePairs(dadaFs, filtFs, dadaRs, filtRs, verbose=TRUE)
 
-#Inspeect the result
+# inspeect the result
 head(mergers[[1]])
 
 #-----------------------------------------------------------------------------------------------------
-#  Construct sequence table  ----
+# Construct sequence table  ----
 #-----------------------------------------------------------------------------------------------------
 # construct an amplicon sequence variant table (ASV) table
 seqtab <- makeSequenceTable(mergers)
@@ -95,19 +93,19 @@ dim(seqtab)
 table(nchar(getSequences(seqtab)))
 
 #-----------------------------------------------------------------------------------------------------
-#  Remove chimeras  ----
+# Remove chimeras  ----
 #-----------------------------------------------------------------------------------------------------
-# Identify how many chimeric reads in the total sequence
+# identify how many chimeric reads in the total sequence
 seqtab.nochim <- removeBimeraDenovo(seqtab,method="consensus", multithread=TRUE, verbose = TRUE)
 
-# Dimention of the seqtable after removing chimera
+# dimention of the seqtable after removing chimera
 dim(seqtab.nochim)  
 
-# ratio of reads that are not chimeric.
+# ratio of reads that are not chimeric
 sum(seqtab.nochim)/sum(seqtab) 
 
 #-----------------------------------------------------------------------------------------------------
-#  Track reads through the pipeline  ----
+# Track reads through the pipeline  ----
 #-----------------------------------------------------------------------------------------------------
 getN <- function(x)sum(getUniques(x))
 track <-cbind(out, sapply(dadaFs, getN),sapply(dadaRs, getN),sapply(mergers, getN),rowSums(seqtab.nochim))
@@ -122,7 +120,7 @@ print(df2)
 write_xlsx(df2,"./DADA2_output.xlsx")
 
 #-----------------------------------------------------------------------------------------------------
-#  Assign Taxonomy  ----
+# Assign Taxonomy  ----
 #-----------------------------------------------------------------------------------------------------
 # use the updated SILVA training set (version 132) https://github.com/itsmisterbrown/updated_16S_dbs
 taxa <- assignTaxonomy(seqtab.nochim,
@@ -138,7 +136,7 @@ head(taxa.print)
 write.csv(taxa, file="ASVs_taxonomy.csv") 
 saveRDS(taxa, "ASVs_taxonomy.rds") 
 
-# The ASVs count table
+# ASVs count table
 asv_headers <- vector(dim(seqtab.nochim)[2], mode="character")
 count.asv.tab <- t(seqtab.nochim)
 row.names(count.asv.tab) <- sub(">", "", asv_headers)
