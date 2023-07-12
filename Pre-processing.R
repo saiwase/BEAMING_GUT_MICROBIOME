@@ -15,7 +15,7 @@ library(microbiome)
 #-----------------------------------------------------------------------------------------------------
 # Remove the taxa apart from bacteria  ----
 #-----------------------------------------------------------------------------------------------------
-BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & pc/nc controls)
+BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & pc/nc)
 #phyloseq-class experiment-level object
 #otu_table()   OTU Table:         [ 5464 taxa and 540 samples ]
 #sample_data() Sample Data:       [ 540 samples by 75 sample variables ]
@@ -31,13 +31,13 @@ BEAMING_phy2 <- prune_taxa(taxa_sums(BEAMING_phy) > 1, BEAMING_phy)
 any(taxa_sums(BEAMING_phy2) == 0) # FALSE
 
 # filter out non-bacteria, chloroplasts and mitochondria 
-a = which(tax_table(BEAMING_phy2)[,"Kingdom"]!="Bacteria")
-b = which(tax_table(BEAMING_phy2)[,"Family"]=="mitochondria")
-c = which(tax_table(BEAMING_phy2)[,"Class"]=="Chloroplast")
-d = c(a,b,c)  
+a = which(tax_table(BEAMING_phy2)[, "Kingdom"]! = "Bacteria")
+b = which(tax_table(BEAMING_phy2)[, "Family"] == "mitochondria")
+c = which(tax_table(BEAMING_phy2)[, "Class"] == "Chloroplast")
+d = c(a, b, c)  
 d  # [1]  300  835 1121 1568 1677 1798 3225 3862 3986
 e = taxa_names(BEAMING_phy2)[-d]
-BEAMING_phy3 = prune_taxa(e,BEAMING_phy2)
+BEAMING_phy3 = prune_taxa(e, BEAMING_phy2)
 
 # check
 ntaxa(BEAMING_phy)  # 5464 - before filtering
@@ -47,9 +47,9 @@ ntaxa(BEAMING_phy3) # 4341 - after removing non-bacteria
 #-----------------------------------------------------------------------------------------------------
 # Inspect NC and PC for possible contamination ----
 #-----------------------------------------------------------------------------------------------------
-sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1","M33-NC2","M33-NC3","M35-NC1","M35-NC2","M35-NC3",
-                                                                                                "M37-NC0","M37-NC1","M37-NC2","M38-NC0","M38-NC1","M38-NC2")) ~"NegControl", 
-                                                          (sample_data(BEAMING_phy3)$PID %in% c("M33-PC","M35-PC","M37-PC","M38-PC")) ~ "PosControl",
+sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
+                                                                                                "M37-NC0", "M37-NC1", "M37-NC2", "M38-NC0", "M38-NC1", "M38-NC2")) ~"NegControl", 
+                                                          (sample_data(BEAMING_phy3)$PID %in% c("M33-PC", "M35-PC", "M37-PC", "M38-PC")) ~ "PosControl", 
                                                           TRUE ~ "Sample")
 
 ### subset NC samples  ------
@@ -66,16 +66,16 @@ sample_sums(NC_phy2)
 
 # standarize the reads count
 total = median(sample_sums(NC_phy2))
-standf = function(x, t=total) round(t * (x / sum(x)))
+standf = function(x, t = total) round(t * (x / sum(x)))
 NC_phy2.std = transform_sample_counts(NC_phy2, standf)
 
 # plot
-plot_bar(NC_phy2.std, x="PID", fill="Phylum")
-plot_bar(NC_phy2.std, x="PID", fill="Class")
-plot_bar(NC_phy2.std, x="PID", fill="Order")
-plot_bar(NC_phy2.std, x="PID", fill="Family")
-plot_bar(NC_phy2.std, x="PID", fill="Genus")
-plot_bar(NC_phy2.std, x="PID", fill="Species")
+plot_bar(NC_phy2.std, x = "PID", fill = "Phylum")
+plot_bar(NC_phy2.std, x = "PID", fill = "Class")
+plot_bar(NC_phy2.std, x = "PID", fill = "Order")
+plot_bar(NC_phy2.std, x = "PID", fill = "Family")
+plot_bar(NC_phy2.std, x = "PID", fill = "Genus")
+plot_bar(NC_phy2.std, x = "PID", fill = "Species")
 
 
 ### subset PC samples ------
@@ -90,19 +90,19 @@ sample_sums(PC_phy2)
 
 # standarize the reads count
 total = median(sample_sums(PC_phy2))
-standf = function(x, t=total) round(t * (x / sum(x)))
+standf = function(x, t = total) round(t * (x / sum(x)))
 PC_phy2.std = transform_sample_counts(PC_phy2, standf) # standarized phyloseq object
 
 sample_sums(PC_phy2) # before standarize
 sample_sums(PC_phy2.std) # after standarize
 
 # plot
-plot_bar(PC_phy2.std, x="PID", fill="Phylum")
-plot_bar(PC_phy2.std, x="PID", fill="Class")
-plot_bar(PC_phy2.std, x="PID", fill="Order")
-plot_bar(PC_phy2.std, x="PID", fill="Family")
-plot_bar(PC_phy2.std, x="PID", fill="Genus")
-plot_bar(PC_phy2.std, x="PID", fill="Species")
+plot_bar(PC_phy2.std, x = "PID", fill = "Phylum")
+plot_bar(PC_phy2.std, x = "PID", fill = "Class")
+plot_bar(PC_phy2.std, x = "PID", fill = "Order")
+plot_bar(PC_phy2.std, x = "PID", fill = "Family")
+plot_bar(PC_phy2.std, x = "PID", fill = "Genus")
+plot_bar(PC_phy2.std, x = "PID", fill = "Species")
 
 #-----------------------------------------------------------------------------------------------------
 # Remove potential contamination by "decontam"  ----
@@ -114,22 +114,22 @@ BEAMING_phy3
 head(sample_data(BEAMING_phy3))
 ## ----see-depths------------------------------------------------------------
 # annotate PC/NC samples
-sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1","M33-NC2","M33-NC3","M35-NC1","M35-NC2","M35-NC3",
-                                                                                                "M37-NC0","M37-NC1","M37-NC2","M38-NC0","M38-NC1","M38-NC2")) ~"NegControl", 
-                                                          (sample_data(BEAMING_phy3)$PID %in% c("M33-PC","M35-PC","M37-PC","M38-PC")) ~ "PosControl",
+sample_data(BEAMING_phy3)$Sample_or_Control <-  case_when((sample_data(BEAMING_phy3)$PID %in% c("M33-NC1", "M33-NC2", "M33-NC3", "M35-NC1", "M35-NC2", "M35-NC3", 
+                                                                                                "M37-NC0", "M37-NC1", "M37-NC2", "M38-NC0", "M38-NC1", "M38-NC2")) ~"NegControl", 
+                                                          (sample_data(BEAMING_phy3)$PID %in% c("M33-PC", "M35-PC", "M37-PC", "M38-PC")) ~ "PosControl", 
                                                           TRUE ~ "Sample")
 
 df <- as.data.frame(sample_data(BEAMING_phy3))
 df$LibrarySize <- sample_sums(BEAMING_phy3)
-df <- df[order(df$LibrarySize),] # change the order
+df <- df[order(df$LibrarySize), ] # change the order
 df$Index <- seq(nrow(df))
 
 sample_sums(BEAMING_phy3) # check indivisual read count
-ggplot(data=df, aes(x=Index, y=LibrarySize, color=Sample_or_Control)) + geom_point()  
+ggplot(data = df, aes(x = Index, y = LibrarySize, color = Sample_or_Control)) + geom_point()  
 
 ## ----Identify Contaminants - Prevalence------------------------------------------------------------
 sample_data(BEAMING_phy3)$is.neg <- sample_data(BEAMING_phy3)$Sample_or_Control == "NegControl"
-contamdf.prev <- isContaminant(BEAMING_phy3, method="prevalence", neg="is.neg")
+contamdf.prev <- isContaminant(BEAMING_phy3, method = "prevalence", neg = "is.neg")
 table(contamdf.prev$contaminant) # whether they are contaminant or not (true/false)
 ## FALSE  TRUE 
 ## 4339     2 
@@ -140,7 +140,7 @@ tax_table(BEAMING_phy3) [2633] # Cyanobacteriia  (class) Chloroplast (order)
 
 ## ----prevalence-05---------------------------------------------------------
 # stricter filtering with threshold 0.5
-contamdf.prev05 <- isContaminant(BEAMING_phy3, method="prevalence", neg="is.neg", threshold=0.5)
+contamdf.prev05 <- isContaminant(BEAMING_phy3, method = "prevalence", neg = "is.neg", threshold = 0.5)
 table(contamdf.prev05$contaminant)
 # FALSE  TRUE 
 # 4335     6 
@@ -162,13 +162,13 @@ ps.pa.neg <- prune_samples(sample_data(ps.pa)$Sample_or_Control == "NegControl",
 ps.pa.pos <- prune_samples(sample_data(ps.pa)$Sample_or_Control == "Sample", ps.pa)
 
 # make data.frame of prevalence in positive and negative samples
-df.pa <- data.frame(pa.pos=taxa_sums(ps.pa.pos), pa.neg=taxa_sums(ps.pa.neg),
-                    contaminant=contamdf.prev$contaminant)
-df.pa[1:10,]
+df.pa <- data.frame(pa.pos = taxa_sums(ps.pa.pos), pa.neg = taxa_sums(ps.pa.neg), 
+                    contaminant = contamdf.prev$contaminant)
+df.pa[1:10, ]
 
 # with annotation
-ggplot(data=df.pa, aes(x=pa.neg, y=pa.pos, color=contaminant)) +
-  geom_point() + xlab("Prevalence (Negative Controls)") + ylab("Prevalence (True Samples)")+
+ggplot(data = df.pa, aes(x = pa.neg, y = pa.pos, color = contaminant)) + 
+  geom_point() + xlab("Prevalence (Negative Controls)") + ylab("Prevalence (True Samples)") + 
   geom_text_repel(aes(label = rownames(df.pa)))
 
 ## ----remove----------------------------------------------------------------
@@ -184,8 +184,8 @@ BEAMING_phy3.noncontam # 4335 taxa (after removing the contaminant)
 reads <- sample_sums(BEAMING_phy3.noncontam)
 length(which(reads<2000)) # 91 mostly W1 samples
 Samples_toRemove <- dput(names(which(reads<2000)))
-Samples_toRemove <- append(Samples_toRemove,c("M33-PC","M35-PC","M37-PC",
-                                              "N0240BBAS2","N0267BV5","N0319BV5","N0314BV5")) 
+Samples_toRemove <- append(Samples_toRemove, c("M33-PC", "M35-PC", "M37-PC", 
+                                              "N0240BBAS2", "N0267BV5", "N0319BV5", "N0314BV5")) 
 
 BEAMING_phy4 <- subset_samples(BEAMING_phy3.noncontam, !(Sample_ID2 %in% Samples_toRemove))  
 
@@ -194,13 +194,13 @@ BEAMING_phy4 <- subset_samples(BEAMING_phy3.noncontam, !(Sample_ID2 %in% Samples
 #-----------------------------------------------------------------------------------------------------
 ## standardise
 total = median(sample_sums(BEAMING_phy4))
-standf = function(x, t=total) round(t * (x / sum(x)))
+standf = function(x, t = total) round(t * (x / sum(x)))
 Phy.std = transform_sample_counts(BEAMING_phy4, standf) # standarized phyloseq object
 
 sample_sums(BEAMING_phy4)
 sample_sums(Phy.std) 
 
-## filter the standardised phyloseq (= Phy.f_std)
+## filter the standardised phyloseq ( = Phy.f_std)
 # the filter below retains only OTUs that are present at at least 10 counts at least 2% of samples OR that have a total relative abundance of at least 0.1% of the total number of reads/sample
 Phy.f_std = filter_taxa(Phy.std, function(x) sum(x > 10) > (0.2*length(x)) | sum(x) > 0.001*total, TRUE) 
 ntaxa(Phy.std) #  4335 
@@ -222,9 +222,9 @@ phy.obj.rel <- Phy.f_std
 phy.obj.rel <-transform_sample_counts(physeq = phy.obj.rel, fun = function(x) x/sum(x))
 otu_table(phy.obj.rel)
 
-jsd_dist <- phyloseq::distance(phy.obj.rel, method="jsd")
+jsd_dist <- phyloseq::distance(phy.obj.rel, method = "jsd")
 ord = ordinate(phy.obj.rel, method = "PCoA", distance = jsd_dist)
-plot_scree(ord) + xlim(as.character(seq(1,20))) + ggtitle("PCoA-jsd ordination eigenvalues")
+plot_scree(ord) + xlim(as.character(seq(1, 20))) + ggtitle("PCoA-jsd ordination eigenvalues")
 
 evs <- ord$value$Eigenvalues
 print(evs[1:20])
@@ -232,68 +232,68 @@ print(tail(evs))
 
 # remove those below magnitude of largest negative eignevalue
 h_sub10 <- hist(evs[10:length(evs)], 100)
-plot(h_sub10$mids, h_sub10$count, log="y", type='h', lwd=10, lend=2)
+plot(h_sub10$mids, h_sub10$count, log = "y", type = 'h', lwd = 10, lend = 2)
 
 # gap statistic for cluter number
 NDIM <- 7 #11 falls below mag of largest neg eig
-x <- ord$vectors[,1:NDIM]  # rows=sample, cols=MDS axes, entries = value
+x <- ord$vectors[, 1:NDIM]  # rows = sample, cols = MDS axes, entries = value
 pamPCoA = function(x, k) {
-  list(cluster = pam(x[,1:2], k, cluster.only = TRUE))
+  list(cluster = pam(x[, 1:2], k, cluster.only = TRUE))
 }
 gs = clusGap(x, FUN = pamPCoA, d.power = 2, K.max = 12, B = 500) #Tibshirani def of power
 
 # ElbowPlot ---
-# k=3 is the optimal
-p1 = plot_clusgap(gs) + scale_x_continuous(breaks=c(seq(0, 12, 2)))+ 
-  theme_bw()+ theme() + ggtitle("") + theme(axis.text=element_text(size=13, face="bold"),
-                                            axis.title=element_text(size=16,face="bold"), 
-                                            legend.title=element_text(size=14),
-                                            legend.text = element_text(size =12))
+# k = 3 is the optimal
+p1 = plot_clusgap(gs) + scale_x_continuous(breaks = c(seq(0, 12, 2))) + 
+  theme_bw() + theme() + ggtitle("") + theme(axis.text = element_text(size = 13, face = "bold"), 
+                                            axis.title = element_text(size = 16, face = "bold"), 
+                                            legend.title = element_text(size = 14), 
+                                            legend.text = element_text(size = 12))
 p1
 
-# k=3
+# k = 3
 K <- 3
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 # add to sample data
 sample_data(phy.obj.rel)$PAM_3 <- clust
 PAMs <- as.character(seq(K))
 
-# k=4
+# k = 4
 K <- 4
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 # add to sample data
 sample_data(phy.obj.rel)$PAM_4 <- clust
 PAMs <- as.character(seq(K))
 
-# k=5
+# k = 5
 K <- 5
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 # add to sample data
 sample_data(phy.obj.rel)$PAM_5 <- clust
 PAMs <- as.character(seq(K))
 
-# k=6
+# k = 6
 K <- 6
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 # add to sample data
 sample_data(phy.obj.rel)$PAM_6 <- clust
 PAMs <- as.character(seq(K))
 
-# k=7
+# k = 7
 K <- 7
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 # add to sample data
 sample_data(phy.obj.rel)$PAM_7 <- clust
 PAMs <- as.character(seq(K))
 
 ### visually evaluate clustering -----
 ### set up the color
-PAMColors <- brewer.pal(7,"Paired")[c(1,3,2,5,4,6,7)] # Length 6 for consistency with pre-revision CST+ coloration
+PAMColors <- brewer.pal(7, "Paired")[c(1, 3, 2, 5, 4, 6, 7)] # Length 6 for consistency with pre-revision CST + coloration
 names(PAMColors) <- PAMs
 PAMColorScale <- scale_colour_manual(name = "PAM_3", values = PAMColors[1:7])
 PAMFillScale <- scale_fill_manual(name = "PAM_3", values = PAMColors[1:7])
@@ -307,25 +307,25 @@ PAMColorScale <- scale_colour_manual(name = "PAM_7", values = PAMColors[1:7])
 PAMFillScale <- scale_fill_manual(name = "PAM_7", values = PAMColors[1:7])
 
 ### plot
-# k=3
-plot_ordination(phy.obj.rel, ord, color="PAM_3") + PAMColorScale
-plot_ordination(phy.obj.rel, ord, axes=c(3,4), color="PAM_3") + PAMColorScale
-# k=4
-plot_ordination(phy.obj.rel, ord, color="PAM_4") + PAMColorScale
-# k=5
-plot_ordination(phy.obj.rel, ord, color="PAM_5") + PAMColorScale
-# k=6
-plot_ordination(phy.obj.rel, ord, color="PAM_6") + PAMColorScale
-# k=7
-plot_ordination(phy.obj.rel, ord, color="PAM_7") + PAMColorScale
+# k = 3
+plot_ordination(phy.obj.rel, ord, color = "PAM_3") + PAMColorScale
+plot_ordination(phy.obj.rel, ord, axes = c(3, 4), color = "PAM_3") + PAMColorScale
+# k = 4
+plot_ordination(phy.obj.rel, ord, color = "PAM_4") + PAMColorScale
+# k = 5
+plot_ordination(phy.obj.rel, ord, color = "PAM_5") + PAMColorScale
+# k = 6
+plot_ordination(phy.obj.rel, ord, color = "PAM_6") + PAMColorScale
+# k = 7
+plot_ordination(phy.obj.rel, ord, color = "PAM_7") + PAMColorScale
 
-### add the cluster annotation (k=3)
+### add the cluster annotation (k = 3)
 K <- 3
-x <- ord$vectors[,1:NDIM]
-clust <- as.factor(pam(x, k=K, cluster.only=T))
+x <- ord$vectors[, 1:NDIM]
+clust <- as.factor(pam(x, k = K, cluster.only = T))
 
 sample_data(Phy.f_std)$Pam3_bray <- clust   # add the annotation to phyloseq object
-levels(sample_data(Phy.f_std)$Pam3_bray) <- c("1"="Cluster1","2"="Cluster2","3"="Cluster3")
+levels(sample_data(Phy.f_std)$Pam3_bray) <- c("1" = "Cluster1", "2" = "Cluster2", "3" = "Cluster3")
 
 # save the PAM cluter info
 # saveRDS(Phy.f_std, "Phy.f_std.RDS")
