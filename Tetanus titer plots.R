@@ -4,7 +4,6 @@ library(dplyr)
 library(ggpubr)
 
 ### Prepare the dataset
-# load Tetanus titer data (including mum's titer)
 Tetanus <- read_excel("Tetanus titer_long.xlsx")
 
 Tetanus$Baby_titer[which(Tetanus$Baby_titer == "<0.1")] <- "0.099"  
@@ -39,7 +38,7 @@ Fig4A
 
 ### Fig4B (box plots) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
-meta <- data.frame(sample_data(Phy.f_std)) %>% tibble()  %>% filter(Baby_titer >0)
+meta <- data.frame(sample_data(Phy.f_std)) %>% tibble() %>% filter(Baby_titer >0)
 meta$Baby_titer # Tetanus titer of infants
 
 p1 = ggplot(data = meta, aes(x = Status2, y = Baby_titer)) + 
@@ -63,8 +62,7 @@ p1 = ggplot(data = meta, aes(x = Status2, y = Baby_titer)) +
 
 # adjust for multiple comparison
 anno_df <- compare_means(Baby_titer ~ Status2, meta, method = "wilcox.test", paired = FALSE, 
-                         group.by = "Visit", ref.group = NULL, 
-                         p.adjust.method = "BH")
+                         group.by = "Visit", ref.group = NULL, p.adjust.method = "BH")
 anno_df$y.position <- c(6, 6) 
 anno_df$xmin <- c(1, 1)
 anno_df$xmax <- c(2, 2)
@@ -132,8 +130,7 @@ TestFrag1$xmin <- c(0.8, 1.8)
 TestFrag1$xmax <- c(1.2, 2.2)
 
 # add stat1
-bxp.complex = bxp + stat_pvalue_manual(TestFrag1, label = "p.adj", 
-                                        tip.length = 0.01, label.size = 5)
+bxp.complex = bxp + stat_pvalue_manual(TestFrag1, label = "p.adj", tip.length = 0.01, label.size = 5)
 
 # stat2
 TestFrag2 <- compare_means(Baby_titer ~ Study_site, meta, method = "wilcox.test", paired = FALSE, 
