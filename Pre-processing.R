@@ -15,7 +15,7 @@ library(microbiome)
 #-----------------------------------------------------------------------------------------------------
 # Remove the taxa apart from bacteria  ----
 #-----------------------------------------------------------------------------------------------------
-BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & pc/nc)
+BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq object includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & pc/nc)
 #phyloseq-class experiment-level object
 #otu_table()   OTU Table:         [ 5464 taxa and 540 samples ]
 #sample_data() Sample Data:       [ 540 samples by 75 sample variables ]
@@ -31,7 +31,7 @@ BEAMING_phy2 <- prune_taxa(taxa_sums(BEAMING_phy) > 1, BEAMING_phy)
 any(taxa_sums(BEAMING_phy2) == 0) # FALSE
 
 # filter out non-bacteria, chloroplasts and mitochondria 
-a = which(tax_table(BEAMING_phy2)[, "Kingdom"]! = "Bacteria")
+a = which(tax_table(BEAMING_phy2)[, "Kingdom"]!= "Bacteria")
 b = which(tax_table(BEAMING_phy2)[, "Family"] == "mitochondria")
 c = which(tax_table(BEAMING_phy2)[, "Class"] == "Chloroplast")
 d = c(a, b, c)  
@@ -172,7 +172,7 @@ ggplot(data = df.pa, aes(x = pa.neg, y = pa.pos, color = contaminant)) +
   geom_text_repel(aes(label = rownames(df.pa)))
 
 ## ----remove----------------------------------------------------------------
-BEAMING_phy3  #4341 taxa (before removing the contaminant)
+BEAMING_phy3  # 4341 taxa (before removing the contaminant)
 
 BEAMING_phy3.noncontam <- prune_taxa(!contamdf.prev05$contaminant, BEAMING_phy3)
 BEAMING_phy3.noncontam # 4335 taxa (after removing the contaminant)
