@@ -5,27 +5,22 @@ library(ggpubr)
 library(dplyr)
 library(vegan)
 
-
 ### Fig1B (Alpha diversity) -------
 # load phyloseq object
 Phy.f_std <- readRDS("Phy.f_std.RDS")
-
 # filter only W1 samples
 Phy.f_std_W1 <- subset_samples(Phy.f_std, Visit == "Week 1")
 
 p1 = plot_richness(Phy.f_std_W1, x = "Study_site", measures = "Shannon", color = "Study_site") + 
-  geom_boxplot(alpha = 0.6) + 
-  theme_bw() + 
+  geom_boxplot(alpha = 0.6) + theme_bw() + 
   theme(legend.position = "none", 
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 17, face = "bold"), 
         axis.text.y = element_text(size = 16, face = "bold"), 
         strip.text = element_blank(), 
         text = element_text(size = 17, face = "bold")) + xlab("Study site") + labs(y = "Shannon Index")
 
-# and add statistics
 a_my_comparisons <- list( c("South Africa", "Nigeria"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
-
 Fig1_B = p1 + stat_compare_means(method = "wilcox.test", paired = F, comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) + 　
   scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 
@@ -84,15 +79,13 @@ diss <- phyloseq::distance(Phy.f_std_W1, "bray", parallel = TRUE)
 Phy.f_std_W1_df <- data.frame(row.names = sample_names(Phy.f_std_W1), sample_data(Phy.f_std_W1))
 
 # adjusted for sequencing batch or demographic factors that significantly differed between countries
-names(sample_data(Phy.f_std_W1))
 sample_data(Phy.f_std_W1)$Education <- as.factor(sample_data(Phy.f_std_W1)$Education)
 sample_data(Phy.f_std_W1)$Occupation <-  as.factor(sample_data(Phy.f_std_W1)$Occupation)
-sample_data(Phy.f_std_W1)$Houses 
+sample_data(Phy.f_std_W1)$Houses <- as.factor(sample_data(Phy.f_std_W1)$Houses)
 sample_data(Phy.f_std_W1)$Refrigerator <- as.factor(sample_data(Phy.f_std_W1)$Refrigerator)
 sample_data(Phy.f_std_W1)$Running_water <- as.factor(sample_data(Phy.f_std_W1)$Running_water)
 sample_data(Phy.f_std_W1)$Marital_status <- as.factor(sample_data(Phy.f_std_W1)$Marital_status)
 
-# adjust for SequenceLot/Education/Occupation/Houses/Refrigerator/Running_water/Marital_status/Num_Preg/Mum_weight/Mum_Age/Ges_age/DeliverVag
 set.seed(2)
 adonis2(diss ~ Study_site, data = Phy.f_std_W1_df, permutations = 999, by = "terms", na.action = na.exclude)
 adonis2(diss ~ Study_site + SequenceLot, data = Phy.f_std_W1_df, permutations = 999, by = "terms", na.action = na.exclude)
@@ -143,7 +136,6 @@ Fig2B
 ### PERMANOVA
 diss <- phyloseq::distance(Phy.f_std, "bray", parallel = TRUE)
 Phy.f_std_df <- data.frame(row.names = sample_names(Phy.f_std), sample_data(Phy.f_std)) 
-
 set.seed(2)
 adonis2(diss ~ Study_site, data = Phy.f_std_df, permutations = 999, by = "terms", na.action = na.exclude)  
 adonis2(diss ~ Visit, data = Phy.f_std_df, permutations = 999, by = "terms", na.action = na.exclude)  
@@ -151,21 +143,16 @@ adonis2(diss ~ Visit, data = Phy.f_std_df, permutations = 999, by = "terms", na.
 
 ### FigS1 (Alpha diversity) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
-
 data <- tibble(data.frame(sample_data(Phy.f_std))) %>%  
-  select(PID, Visit, Infant_DOB, DateofVisit) %>%
-  mutate(age_days = as.Date(DateofVisit) - as.Date(Infant_DOB)) %>% 
   mutate(Visit5 = case_when(age_days <= 3 ~ "Meconium", 
                             age_days >= 4 & age_days <= 20 ~ "W1 stool", 
-                            Visit == "Week 15" ~ "W15 stool")) %>% 
-  select(PID, age_days, Visit, Visit5) 
+                            Visit == "Week 15" ~ "W15 stool")) %>% select(PID, age_days, Visit, Visit5) 
 
-sample_data(Phy.f_std)$Visit5 <- data$Visit5 # add the info
+sample_data(Phy.f_std)$Visit5 <- data$Visit5
 sample_data(Phy.f_std)$Visit5 <- as.factor(sample_data(Phy.f_std)$Visit5)
 
 # filter only Meconium samples
 Phy.f_std_W1 <- subset_samples(Phy.f_std, Visit5 == "Meconium")
-
 p1 = plot_richness(Phy.f_std_W1, x = "Study_site", measures = "Shannon", color = "Study_site") + 
   geom_boxplot(alpha = 0.6) + theme_bw() + xlab("Study site") + 
   theme(legend.position = "none", 
@@ -183,6 +170,7 @@ FigS1 = p1 + stat_compare_means(method = "wilcox.test", hide.ns = FALSE,
   scale_y_continuous(expand = expansion(mult = c(0, 0.05))) 
 
 FigS1
+
 
 ### FigS2A (Alpha diversity) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
@@ -229,7 +217,6 @@ FigS2B
 ### PERMANOVA 
 diss <- phyloseq::distance(Phy.f_std_EBF_W15, "bray", parallel = TRUE)  
 Phy.f_std_EBF_W15_df <- data.frame(row.names = sample_names(Phy.f_std_EBF_W15), sample_data(Phy.f_std_EBF_W15))
-
 set.seed(2)
 adonis2(diss ~ Study_site, data = Phy.f_std_EBF_W15_df, permutations = 999, by = "terms", na.omit)
 
@@ -237,7 +224,7 @@ adonis2(diss ~ Study_site, data = Phy.f_std_EBF_W15_df, permutations = 999, by =
 ### FigS3A (Alpha diversity) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 sample_data(Phy.f_std)$DeliverVag <- as.factor(sample_data(Phy.f_std)$DeliverVag)
-levels(sample_data(Phy.f_std)$"DeliverVag") <- c("0" = "C-section", "1" = "Vaginal birth")
+levels(sample_data(Phy.f_std)$DeliverVag) <- c("0" = "C-section", "1" = "Vaginal birth")
 
 # filter only vaginal birth 
 Phy.f_std_VagiBirth <- subset_samples(Phy.f_std, DeliverVag == "Vaginal birth")
@@ -253,10 +240,8 @@ p1 = plot_richness(Phy.f_std_VagiBirth, x = "Study_site", measures = "Shannon", 
   labs(y = "Shannon Index")
 
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
-
 FigS3A <- p1 + stat_compare_means(method = "wilcox.test", comparisons = list(c("South Africa", "Nigeria")), 
-                                label = "p.signif", symnum.args = symnum.args) + 
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+                                label = "p.signif", symnum.args = symnum.args) + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 
 FigS3A
 
@@ -284,10 +269,8 @@ FigS3B
 
 ### PERMANOVA 
 Phy.f_std_VagiBirth <- subset_samples(Phy.f_std, DeliverVag == "Vaginal birth" & Visit = "Week 1")
-
 diss <- phyloseq::distance(Phy.f_std_VagiBirth, "bray", parallel = TRUE)  
 Phy.f_std_VagiBirth_df <- data.frame(row.names = sample_names(Phy.f_std_VagiBirth), sample_data(Phy.f_std_VagiBirth)) 
-
 set.seed(2)
 adonis2(diss ~ Study_site, data = Phy.f_std_VagiBirth_df, permutations = 999, by = "terms", na.omit)
 
@@ -296,8 +279,7 @@ adonis2(diss ~ Study_site, data = Phy.f_std_VagiBirth_df, permutations = 999, by
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 p1 = plot_richness(Phy.f_std, x = "Status2", measures = "Shannon", color = "Status2") + 
   geom_boxplot(alpha = 0.6, aes(fill = sample_data(Phy.f_std)$Status2)) + 
-  facet_wrap(Study_site~Visit) + 
-  theme_bw() + 
+  facet_wrap(Study_site~Visit) + theme_bw() + 
   xlab("HIV exposure status") + 
   theme(legend.position = "none", 
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 17, face = "bold"), 
@@ -339,6 +321,5 @@ FigS4B
 ### PERMANOVA 
 diss <- phyloseq::distance(Phy.f_std, "bray", parallel=TRUE) 
 Phy.f_std_df <- data.frame(row.names=sample_names(Phy.f_std),sample_data(Phy.f_std))
-
 set.seed(20)
 adonis2(diss ~ Status2, data=Phy.f_std_df, permutations = 999, by = "terms", na.omit)  
