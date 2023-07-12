@@ -3,7 +3,7 @@ library(phyloseq)
 library(dplyr)
 library(ggpubr)
 
-### Prepare the dataset
+### prepare the dataset
 Tetanus <- read_excel("Tetanus titer_long.xlsx")
 
 Tetanus$Baby_titer[which(Tetanus$Baby_titer == "<0.1")] <- "0.099"  
@@ -39,7 +39,7 @@ Fig4A
 ### Fig4B (box plots) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 meta <- data.frame(sample_data(Phy.f_std)) %>% tibble() %>% filter(Baby_titer >0)
-meta$Baby_titer # Tetanus titer of infants
+meta$Baby_titer # tetanus titer of infants
 
 p1 = ggplot(data = meta, aes(x = Status2, y = Baby_titer)) + 
   theme_bw() + 
@@ -146,7 +146,7 @@ bxp.complex2 = bxp.complex + stat_pvalue_manual(TestFrag2, label = "p.adj",
                                                  tip.length = 0.01, bracket.nudge.y = 0.5, label.size = 5) + 
   scale_y_continuous(expand = expansion(mult = c(0, 0.1)))
 
-# Display the plot
+# display the plot
 FigS5A = bxp.complex2 + theme_bw() + 
   theme(axis.title = element_text(size = 17, face = "bold"), 
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 17, face = "bold"), 
@@ -274,7 +274,7 @@ anno_df$y.position <- c(6, 6, 6, 6)
 anno_df$xmin <- c(1, 1, 1, 1)
 anno_df$xmax <- c(2, 2, 2, 2)
 
-# Use adjdusted p-value and add on the plot
+# use adjdusted p-value and add on the plot
 alpha_levels <- c(0.05, 0.01, 0.001)
 asterisks <- c("*", "**", "***")
 asterisks <- c("***", "**", "*")
