@@ -1,4 +1,4 @@
-### Script for heatmaps - Fig 1A & FigS 4C
+### Scripts for heatmaps - Fig 1A & FigS 4C
 library(ape)
 library(phyloseq)
 library(RColorBrewer)
@@ -71,8 +71,8 @@ heatmap_stand_otu <- function(physeq) {
   prune_30 = prune_taxa(names(sort(taxa_sums(physeq), TRUE))[1:30], physeq) 
   otus <- otu_table(prune_30)
   #log2 transform otus for better heatmap visualisation colour scale
-  zs <- which(otus == 0)#find zero entries 
-  if(length(zs)>0){#if there are zero values, transform
+  zs <- which(otus == 0) #find zero entries 
+  if(length(zs)>0){ #if there are zero values, transform
     otus[zs] <- 0.1 #set zs to 0.1
     otus <- log2(otus)
   } else{otus <- log2(otus)}
@@ -112,11 +112,11 @@ heatmap_stand_otu <- function(physeq) {
   glom_tree = merge_phyloseq(physeq, glom_random_tree)
   diss <- phyloseq::distance(glom_tree, method = "bray", type = "samples")
   #top 25 most abundant taxa for plotting
-  prune_25 = prune_taxa(names(sort(taxa_sums(physeq), TRUE))[1:24], physeq)  # 24 instead of 25 as two ASVs will be merged together
+  prune_25 = prune_taxa(names(sort(taxa_sums(physeq), TRUE))[1:24], physeq)  #24 instead of 25 as two ASVs will be merged together
   otus <- otu_table(prune_25)
   #log2 transform otus for better heatmap visualisation colour scale
-  zs <- which(otus == 0)#find zero entries 
-  if(length(zs)>0){#if there are zero values, transform
+  zs <- which(otus == 0) #find zero entries 
+  if(length(zs)>0){ #if there are zero values, transform
     otus[zs] <- 0.1 #set zs to 0.1
     otus <- log2(otus)
   } else{otus <- log2(otus)}
