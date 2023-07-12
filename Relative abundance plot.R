@@ -68,7 +68,6 @@ barplot_stag_BEAMING_sort <- function(physeq) {
   p2 <- transform_sample_counts(p1_30, function(x) x/sum(x)) #get abundance in %
   p3 <- psmelt(p2)  #create dataframe from phyloseq object
   p3$Species <- as.character(p3$Species) #convert to character
-  #sort based on abundance of dominant bacteria in each cluster
   p4 <- p3[, c("Sample", "Species","CST_pam_3", "Abundance")]
   p4 <- dcast(p3, Sample + CST_pam_3 ~ Species, value.var = "Abundance", fun.aggregate = sum)
   p4[p4$CST_pam_3 == "Cluster 1",] <- p4[p4$CST_pam_3 == "Cluster 1",][order(p4[p4$CST_pam_3 == "Cluster 1", "coli"]),]
@@ -80,8 +79,7 @@ barplot_stag_BEAMING_sort <- function(physeq) {
   tax_table(p1_30)
   #annotation 
   labs <- tax.lab(physeq, otus = otus)
-  
-  p3$Species <- as.factor(p3$Species)# this is to manually editt the annotation - very figure specific and order needs to be exactly the same.
+  p3$Species <- as.factor(p3$Species)
   levels(p3$Species) <- c("aerofaciens" = "C.aerofaciens", "atypica" = "V.atypica", "aureus" = "S.aureus", "bifidum" = "B.bifidum", "breve" = "B.breve", "caprae" = "S.caprae",
                           "carniphila" = "K.carniphila", "catenulatum" = "B.catenulatum", "coli" = "E.coli", "copri" = "P.copri", "dispar" = "V.dispar", "equorum" = "S.equorum",
                           "erythropolis" =  "R.erythropolis", "faecalis" = "E.faecalis", "faecium" = "E.faecium", "gallolyticus" = "S.gallolyticus", "gasseri" = "L.gasseri",
@@ -90,7 +88,7 @@ barplot_stag_BEAMING_sort <- function(physeq) {
                           "saprophyticus" = "S.saprophyticus", "variicola"= "K.variicola", "vulgatus" = "B.vulgatus")
   
   
-  #set color palette to accommodate the number of species
+  #set color
   colourCount = length(unique(p3$Genus))
   getPalette = colorRampPalette(brewer.pal(8, "Accent"))  
   pal <- c("#7FC97F", "#CBB1C3", "#FDDA8D", "#83A3A7", "#D01487", "#8EC293", 
@@ -105,7 +103,7 @@ barplot_stag_BEAMING_sort <- function(physeq) {
           "yellow", "blue3", "#E01D5E", "chartreuse3", "chocolate4",
           "darkgoldenrod1", "#77479F", "honeydew3", "yellow4", "violet", 
           "tan3", "seagreen", "#A32D93","lightskyblue", "#666666")
-  #annotation 
+  
   #plot
   barplot_species <- ggplot(data = p3, aes(x = Sample, y = Abundance, fill = Species)) 
   barplot_species <- barplot_species + geom_bar(aes(), stat = "identity", position = "stack") + 
