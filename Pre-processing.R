@@ -30,7 +30,7 @@ taxa_sums(BEAMING_phy)
 BEAMING_phy2 <- prune_taxa(taxa_sums(BEAMING_phy) > 1, BEAMING_phy)
 any(taxa_sums(BEAMING_phy2) == 0) # FALSE
 
-# Filter out non-bacteria, chloroplasts and mitochondria 
+# filter out non-bacteria, chloroplasts and mitochondria 
 a = which(tax_table(BEAMING_phy2)[,"Kingdom"]!="Bacteria")
 b = which(tax_table(BEAMING_phy2)[,"Family"]=="mitochondria")
 c = which(tax_table(BEAMING_phy2)[,"Class"]=="Chloroplast")
@@ -156,12 +156,12 @@ tax_table(BEAMING_phy3) [1776]  # Halomonas nitritophilus
 tax_table(BEAMING_phy3) [2633]  # Cyanobacteriia  (class) Chloroplast (order)
 
 ## ----see-prev-05-----------------------------------------------------------
-# Make phyloseq object of presence-absence in negative controls and true samples
+# make phyloseq object of presence-absence in negative controls and true samples
 ps.pa <- transform_sample_counts(BEAMING_phy3, function(abund) 1*(abund>0))
 ps.pa.neg <- prune_samples(sample_data(ps.pa)$Sample_or_Control == "NegControl", ps.pa) 
 ps.pa.pos <- prune_samples(sample_data(ps.pa)$Sample_or_Control == "Sample", ps.pa)
 
-# Make data.frame of prevalence in positive and negative samples
+# make data.frame of prevalence in positive and negative samples
 df.pa <- data.frame(pa.pos=taxa_sums(ps.pa.pos), pa.neg=taxa_sums(ps.pa.neg),
                     contaminant=contamdf.prev$contaminant)
 df.pa[1:10,]
@@ -180,7 +180,7 @@ BEAMING_phy3.noncontam # 4335 taxa (after removing the contaminant)
 #-----------------------------------------------------------------------------------------------------
 # Pre Processing the phyloseq object ----
 #----------------------------------------------------------------------------------------------------
-# Prune samples with <2000 reads, PC/NC, and samples that did not fall into the inclusion criteria
+# prune samples with <2000 reads, PC/NC, and samples that did not fall into the inclusion criteria
 reads <- sample_sums(BEAMING_phy3.noncontam)
 length(which(reads<2000)) # 91 mostly W1 samples
 Samples_toRemove <- dput(names(which(reads<2000)))
@@ -192,7 +192,7 @@ BEAMING_phy4 <- subset_samples(BEAMING_phy3.noncontam, !(Sample_ID2 %in% Samples
 #-----------------------------------------------------------------------------------------------------
 #  standardise and filtering, prepare for the analysis ----
 #-----------------------------------------------------------------------------------------------------
-## Standardise
+## standardise
 total = median(sample_sums(BEAMING_phy4))
 standf = function(x, t=total) round(t * (x / sum(x)))
 Phy.std = transform_sample_counts(BEAMING_phy4, standf) # standarized phyloseq object
@@ -200,8 +200,8 @@ Phy.std = transform_sample_counts(BEAMING_phy4, standf) # standarized phyloseq o
 sample_sums(BEAMING_phy4)
 sample_sums(Phy.std) 
 
-## Filter the standardised phyloseq (= Phy.f_std)
-#The filter below retains only OTUs that are present at at least 10 counts at least 2% of samples OR that have a total relative abundance of at least 0.1% of the total number of reads/sample
+## filter the standardised phyloseq (= Phy.f_std)
+# the filter below retains only OTUs that are present at at least 10 counts at least 2% of samples OR that have a total relative abundance of at least 0.1% of the total number of reads/sample
 Phy.f_std = filter_taxa(Phy.std, function(x) sum(x > 10) > (0.2*length(x)) | sum(x) > 0.001*total, TRUE) 
 ntaxa(Phy.std) #  4335 
 ntaxa(Phy.f_std) #  2084 
@@ -215,7 +215,7 @@ ntaxa(Phy.f_std) #  2084
 #-----------------------------------------------------------------------------------------------------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 
-# Cluster into PAMs
+# cluster into PAMs
 otu_table(Phy.f_std) <- t(otu_table(Phy.f_std))
 
 phy.obj.rel <- Phy.f_std
