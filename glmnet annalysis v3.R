@@ -30,21 +30,21 @@ glmnet.fun <- function(){
   meta_general <- current_meta  %>% dplyr::select(PID, Status2, Study_site) %>% unique()
   
   # <Rank-transformed ASV >
-  # in order to calculate the difference, filter only PID that have two time points
+  # in order to calculate the difference, filter only PIDs that have two time points
   Phy.f_std <- readRDS("Phy.f_std.RDS")
   meta <- data.frame(sample_data(Phy.f_std))
-  PID.of.interest <- meta$PID[duplicated(meta$PID)] # PID with two time points- 164
+  PID.of.interest <- meta$PID[duplicated(meta$PID)] # PIDs with two time points
   phy_country <- subset_samples(Phy.f_std, Study_site == Country  & DeliverVag == "1")
   phy_country <- do.call("subset_samples", list(quote(phy_country), substitute(PID %in% PID.of.interest)))
   
-  length(sample_data(phy_country)$PID[duplicated(sample_data(phy_country)$PID)]) # to check how many PIDs were included (have to be half of "sample number")
+  length(sample_data(phy_country)$PID[duplicated(sample_data(phy_country)$PID)])
   
   # select the top taxa
   N <- 50
   top_taxa <- names(sort(taxa_sums(phy_country), decreasing = TRUE))[1:N]
   phy_country_only.top <- prune_taxa(top_taxa, phy_country)
   
-  ## Get the top taxa
+  ## get the top taxa
   phy_country_only.top_Birth <- subset_samples(phy_country_only.top, Visit == "Week 1")
   rownames(otu_table(phy_country_only.top_Birth))
   
@@ -77,8 +77,7 @@ glmnet.fun <- function(){
   tax_list <- tibble(tax_list)
   colnames(tax_list)[1] <- "ASV.ID"
   tax.name <- tax_list %>% 
-    mutate(Genus_species = paste0(Genus, "_", Species)) %>% 
-    dplyr::select(ASV.ID, Genus_species) # list of ASVs and names
+    mutate(Genus_species = paste0(Genus, "_", Species)) %>% dplyr::select(ASV.ID, Genus_species)
   
   # change the W1 dataset names
   col.name <- colnames(topASV_birth)
@@ -193,8 +192,6 @@ df3.2 <- df2 %>%
 
 df3.2$Covariate2 <- str_replace(df3.2$Covariate2, "NA", "") 
 df3.2$Covariate2 <- str_replace(df3.2$Covariate2, "Status2iHEU", "Exposure status (iHEU)")
-
-#View(df3.2)
 
 p1 = df3.2%>% filter(Beta.coef > 0 |Beta.coef < 0) %>% 
   mutate(color = ifelse(Beta.coef < 0, "#blue", "#red")) %>% 
