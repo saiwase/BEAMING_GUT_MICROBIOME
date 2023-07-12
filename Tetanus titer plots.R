@@ -8,8 +8,8 @@ library(ggpubr)
 Tetanus <- read_excel("Tetanus titer_long.xlsx")
 
 Tetanus$Baby_titer[which(Tetanus$Baby_titer == "<0.1")] <- "0.099"  
-Tetanus$Baby_titer <- as.numeric(Tetanus$Baby_titer)  # change it to numeric
-Tetanus$Baby_titer <- round(Tetanus$Baby_titer, 3)  # change the number of digit
+Tetanus$Baby_titer <- as.numeric(Tetanus$Baby_titer)
+Tetanus$Baby_titer <- round(Tetanus$Baby_titer, 3)
 Tetanus$Status2 <- as.factor(Tetanus$Status2)
 
 # extract PIDs that have microbiome data available
@@ -24,7 +24,6 @@ Tetanus_birth <- Tetanus2 %>% filter(Visit == "Birth")
 
 
 ### Fig4A (Scatter plots) -------
-# Plot to show placental transfer (birth samples) with Scatter plots and Spearman’s rank correlation coefficients
 Fig4A = ggscatter(data = Tetanus_birth, x = "Baby_titer", y = "Mum_titer_birth", 
                        add = "reg.line", conf.int = TRUE, size = 2, color = "Status2") + 
   theme(axis.text = element_text(size = 17, face = "bold"), 
@@ -35,13 +34,12 @@ Fig4A = ggscatter(data = Tetanus_birth, x = "Baby_titer", y = "Mum_titer_birth",
   scale_fill_manual(values = c("#B05A7A", "#F99417")) + 
   labs(x = "Anti-TT IgG at W1 (IU/ml) [infant]") + 
   labs(y = "Anti-TT IgG (IU/ml) [mother]")
-
 Fig4A
 
 
 ### Fig4B (box plots) -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
-meta <- data.frame(sample_data(Phy.f_std)) %>% tibble()  %>% filter(Baby_titer >0) # filter only samples that Tetanus titer is available
+meta <- data.frame(sample_data(Phy.f_std)) %>% tibble()  %>% filter(Baby_titer >0)
 meta$Baby_titer # Tetanus titer of infants
 
 p1 = ggplot(data = meta, aes(x = Status2, y = Baby_titer)) + 
@@ -72,13 +70,11 @@ anno_df$xmin <- c(1, 1)
 anno_df$xmax <- c(2, 2)
 
 Fig4B = p1 + stat_pvalue_manual(anno_df, label = "p.signif", 
-                                 tip.length = 0.01, bracket.nudge.y = 0.5, 
-                                 label.size = 5)
-
+                                 tip.length = 0.01, bracket.nudge.y = 0.5, label.size = 5)
 Fig4B
 
 
-# median TT value
+# median value
 median(meta$Baby_titer[meta$Visit == "Week 1" & meta$Status2 == "iHEU"]) # 1.21 
 median(meta$Baby_titer[meta$Visit == "Week 1" & meta$Status2 == "iHUU"]) # 2.2 
 
@@ -97,9 +93,7 @@ Phy.f_std <- readRDS("Phy.f_std.RDS")
 meta <- data.frame(sample_data(Phy.f_std))
 
 W15_titer <- meta %>% filter(Visit == "Week 15") %>% # select Tetatnus titer at W15
-  select(PID, Baby_titer) %>% 
-  dplyr::rename("W15_titer" = "Baby_titer") %>% 
-  filter(W15_titer > 0)
+  select(PID, Baby_titer) %>% dplyr::rename("W15_titer" = "Baby_titer") %>% filter(W15_titer > 0)
 
 meta2 <- left_join(meta, W15_titer, by = "PID") # update the metadata
  
@@ -118,7 +112,6 @@ Fig5A = ggscatter(data = meta2, x = "Shannon", y = "W15_titer", color = "Study_s
   labs(color = "Study site") + 
   labs(x = "Shannon diversity") + 
   labs(y = "Anti-TT IgG at W15 (IU/ml)")
-
 Fig5A
 
 
@@ -126,9 +119,7 @@ Fig5A
 meta <- data.frame(sample_data(Phy.f_std)) %>% tibble()  %>% filter(Baby_titer >0) # filter only samples that Tetanus titer is available
 
 # boxplot
-bxp = ggboxplot(meta, x = "Study_site", y = "Baby_titer", 
-                 color = "Visit", fill = "Visit", alpha = 0.7, 
-                 palette = c("#4FC3F7", "#48648F"))
+bxp = ggboxplot(meta, x = "Study_site", y = "Baby_titer", color = "Visit", fill = "Visit", alpha = 0.7, palette = c("#4FC3F7", "#48648F"))
 
 # stat1
 TestFrag1 <- compare_means(Baby_titer ~ Visit, meta, method = "wilcox.test", paired = FALSE, 
@@ -167,12 +158,10 @@ FigS5A = bxp.complex2 + theme_bw() +
         legend.title = element_text(size = 17, face = "bold"), 
         legend.text = element_text(size = 17)) + 
   labs(x = "Study site") + labs(y = "Anti-TT IgG (IU/ml)") 
-
 FigS5A
 
 
 ### FigS5B (scatter plot) -------
-# load Tetanus titer data (including mum's titer)
 Tetanus <- read_excel("Tetanus titer_long.xlsx")
 
 Tetanus$Baby_titer[which(Tetanus$Baby_titer == "<0.1")] <- "0.099"  
@@ -206,7 +195,6 @@ scale_color_manual(values = c("#B05A7A", "#F99417")) +
   scale_fill_manual(values = c("#B05A7A", "#F99417")) + 
   labs(x = "Anti-TT IgG (IU/ml) [infant]") + 
   labs(y = "Anti-TT IgG (IU/ml) [mother]")
-
 FigS5B
 
 
@@ -223,7 +211,6 @@ p.adjust(p_value2, method = "BH")
 
 
 ### FigS5C (box plot) -------
-# load Tetanus titer data (including mum's titer)
 Tetanus <- read_excel("Tetanus titer_long.xlsx")
 
 Tetanus$Baby_titer[which(Tetanus$Baby_titer == "<0.1")] <- "0.099"  
@@ -261,7 +248,6 @@ compare_means(Mum_titer_birth ~ Status2, Tetanus_mum, method = "wilcox.test", pa
 a_my_comparisons <- list( c("w/ HIV", "w/o HIV"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
 FigS5C = p1 + stat_compare_means(method = "wilcox.test", comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) 
-
 FigS5C
 
 
@@ -283,7 +269,7 @@ p1 = ggplot(data = meta, aes(x = Status2, y = Baby_titer, color = Status2)) +
   scale_color_manual(values = c("#B05A7A", "#F99417")) + 
   scale_fill_manual(values = c("#B05A7A", "#F99417"))
 
-# stats - adjust for multiple comparison...
+# stats - adjust for multiple comparison
 anno_df <- compare_means(Baby_titer ~ Status2, meta, method = "wilcox.test", paired = FALSE, 
                          group.by = c("Visit", "Study_site"), ref.group = NULL, p.adjust.method = "BH")
 
@@ -300,5 +286,4 @@ anno_df$p.adj.signif <- ifelse(anno_df$p.adj <= alpha_levels[1], asterisks[1],
                                       ifelse(anno_df$p.adj <= alpha_levels[3], asterisks[3], "ns")))
 
 FigS5D = p1 + stat_pvalue_manual(anno_df, label = "p.adj.signif", tip.length = 0.01, bracket.nudge.y = 0.5, label.size = 4)
-
 FigS5D
