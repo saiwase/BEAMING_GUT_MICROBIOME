@@ -62,7 +62,7 @@ tax.lab <- function(otus, physeq, labrow=TRUE, merged=FALSE){
 }
 
 
-### load phyloseq --------
+### load phyloseq object --------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 sample_data(Phy.f_std)$Visit
 sample_data(Phy.f_std)$Status2 <-factor(sample_data(Phy.f_std)$Status2, levels = c("iHUU", "iHEU"))
@@ -117,8 +117,7 @@ df_fig_SS = df_lfc %>%
   dplyr::arrange(desc(Status2iHEU)) %>%
   dplyr::mutate(direct = ifelse(Status2iHEU > 0, "Positive LFC", "Negative LFC"))
 df_fig_SS$taxon_id = factor(df_fig_SS$taxon_id, levels = df_fig_SS$taxon_id)
-df_fig_SS$direct = factor(df_fig_SS$direct, 
-                          levels = c("Positive LFC", "Negative LFC"))
+df_fig_SS$direct = factor(df_fig_SS$direct, levels = c("Positive LFC", "Negative LFC"))
 
 tax_list <- read.csv("tax_list_BEAMING.csv") # get taxa list
 names(tax_list)
@@ -127,17 +126,15 @@ tax_list  <- tax_list[-1]
 
 data <- left_join(df_fig_SS, tax_list, by = "taxon_id")
 data$Species[is.na(data$Species)] = "(unclassified)"
-data2 <- data %>%
-  mutate(genspec = paste0(Genus, " ", Species)) %>% 
-  relocate(Kingdom, Phylum, Class, Order, Family, Genus, Species, genspec) 
+data2 <- data %>% mutate(genspec = paste0(Genus, " ", Species)) %>% relocate(Kingdom, Phylum, Class, Order, Family, Genus, Species, genspec) 
 
 # add annotation
-CT_W1_HIVexposure <- data2
-CT_W15_HIVexposure <- data2
-CT_W1_HIVexposure$tag <- "CT.W1"
-CT_W15_HIVexposure$tag <- "CT.W15"
+SA_W1_HIVexposure <- data2
+SA_W15_HIVexposure <- data2
+SA_W1_HIVexposure$tag <- "SA.W1"
+SA_W15_HIVexposure$tag <- "SA.W15"
 
-data3 <- rbind(CT_W1_HIVexposure, CT_W15_HIVexposure)
+data3 <- rbind(SA_W1_HIVexposure, SA_W15_HIVexposure)
 View(data3)
 
 df <- data.frame(data3, check.names = T)
