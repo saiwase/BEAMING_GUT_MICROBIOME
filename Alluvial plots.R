@@ -4,14 +4,14 @@ library(ggplot2)
 library(msm)
 library(ggalluvial)
 
-### Fig2C (Alluvial Plot) -------
+### Fig2C -------
 # load phyloseq object
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 df<- sample_data(Phy.f_std)
 
 # PIDs that have both time points
 PID.with.2TP <- df$PID2[duplicated(df$PID2)]
-physeq <- subset_samples(Phy.f_std, PID2 %in% PID.with.2TP) # subset the phyloseq 
+physeq <- subset_samples(Phy.f_std, PID2 %in% PID.with.2TP) # subset the phyloseq object
 
 df = sample_data(physeq)[, c("Visit", "Pam3_bray", "PID", "Status2", "Study_site")]
 df$Pam3_bray = as.character(unlist(df$Pam3_bray))
@@ -32,9 +32,8 @@ Fig2C <- ggplot(as.data.frame(df),
   geom_label(stat = "stratum", aes(label = after_stat(stratum))) + 
   scale_x_discrete(limits = c("Week 1", "Week 15"), expand = c(.05, .05, .05, .05)) + 
   scale_fill_brewer(type = "qual", palette = "Set1") + 
-  theme_bw() + 
+  theme_bw() + facet_wrap(~Study_site) + 
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) + 
-  facet_wrap(~Study_site) + 
   theme(axis.text.y = element_text(size = 17, face = "bold"), 
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 17, face = "bold"), 
         axis.title = element_text(size = 18, face = "bold"), 
@@ -47,7 +46,7 @@ Fig2C <- ggplot(as.data.frame(df),
 Fig2C
 
 
-### Fig4SD (Alluvial Plot) -------
+### Fig4SD -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 df<- sample_data(Phy.f_std)
 PID.with.2TP <- df$PID2[duplicated(df$PID2)]
@@ -70,12 +69,9 @@ Fig4SD = ggplot(data = as.data.frame(df),
   facet_wrap(~Study_site) + 
   geom_alluvium(aes(fill = Status2), width = 1/16) + 
   scale_fill_manual(values = c("#B05A7A", "#F99417")) + 
-  geom_stratum(width = 1/2.5) + 
-  geom_text(stat = "stratum", size = 5, 
-            aes(label = after_stat(stratum))) + 
-  scale_x_discrete(limits = c("Week 1", "Week 15"), 
-                   expand = c(0.15, 0.05)) + 
-  theme_bw() + 
+  geom_stratum(width = 1/2.5) + theme_bw() + 
+  geom_text(stat = "stratum", size = 5, aes(label = after_stat(stratum))) + 
+  scale_x_discrete(limits = c("Week 1", "Week 15"), expand = c(0.15, 0.05)) + 
   guides(fill = guide_legend(title = "Exposure status")) + 
   theme(axis.text.y = element_text(size = 17, face = "bold"), 
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = 17, face = "bold"), 
