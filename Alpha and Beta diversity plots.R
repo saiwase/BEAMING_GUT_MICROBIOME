@@ -21,8 +21,7 @@ p1 = plot_richness(Phy.f_std_W1, x = "Study_site", measures = "Shannon", color =
 
 a_my_comparisons <- list( c("South Africa", "Nigeria"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
-Fig1_B = p1 + stat_compare_means(method = "wilcox.test", paired = F, comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) + 　
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+Fig1_B = p1 + stat_compare_means(method = "wilcox.test", paired = F, comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 
 Fig1_B  
 
@@ -107,8 +106,7 @@ p1 <- plot_richness(Phy.f_std, x = "Visit", measures = "Shannon", color = "Study
 a_my_comparisons <- list( c("Week 1", "Week 15"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
 Fig2A = p1 + stat_compare_means(method = "wilcox.test", comparisons = a_my_comparisons, 
-                                label = "p.signif", symnum.args = symnum.args) + 
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+                                label = "p.signif", symnum.args = symnum.args) + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 
 Fig2A  
 
@@ -166,8 +164,7 @@ a_my_comparisons <- list( c("South Africa", "Nigeria"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
 FigS1 = p1 + stat_compare_means(method = "wilcox.test", hide.ns = FALSE, 
                                 comparisons = a_my_comparisons, 
-                                label = "p.signif", symnum.args = symnum.args) + 
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) 
+                                label = "p.signif", symnum.args = symnum.args) + scale_y_continuous(expand = expansion(mult = c(0, 0.05))) 
 
 FigS1
 
@@ -188,8 +185,7 @@ p1 = plot_richness(Phy.f_std_EBF_W15, x = "Study_site", measures = "Shannon", co
 
 a_my_comparisons <- list(c("South Africa", "Nigeria"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
-FigS2A = p1 + stat_compare_means(method = "wilcox.test", comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) + 
-  scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
+FigS2A = p1 + stat_compare_means(method = "wilcox.test", comparisons = a_my_comparisons, label = "p.signif", symnum.args = symnum.args) + scale_y_continuous(expand = expansion(mult = c(0, 0.05)))
 
 FigS2A
 
@@ -293,8 +289,7 @@ p1 = plot_richness(Phy.f_std, x = "Status2", measures = "Shannon", color = "Stat
 a_my_comparisons <- list( c("iHEU", "iHUU"))
 symnum.args = list(cutpoints = c(0, 0.0001, 0.001, 0.01, 0.05, 1), symbols = c("****", "***", "**", "*", "ns"))
 FigS4A = p1 + stat_compare_means(method = "wilcox.test", comparisons = a_my_comparisons, 
-                                  label = "p.signif", symnum.args = symnum.args, size = 5) + 
-  scale_y_continuous(expand = expansion(mult = c(0, 0.1))) 
+                                  label = "p.signif", symnum.args = symnum.args, size = 5) + scale_y_continuous(expand = expansion(mult = c(0, 0.1))) 
 
 FigS4A
 
