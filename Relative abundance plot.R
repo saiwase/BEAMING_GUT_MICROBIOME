@@ -1,4 +1,4 @@
-### scripts for relative abundance plot
+### script for relative abundance plot
 library(phyloseq)
 library(ggplot2)
 library(maditr)
@@ -86,7 +86,6 @@ barplot_stag_BEAMING_sort <- function(physeq) {
                           "haemolyticus" = "S.haemolyticus", "longum" = "B.longum", "lutetiensis" = "S.lutetiensis", "luteus" = "M.luteus", "palustris" = "K.palustris",
                           "pentosaceus" = "P.pentosaceus", "pneumoniae" = "K.pneumoniae", "putida" = "P.putida", "quasipneumoniae" = "K.quasipneumoniae", "salivarius" = "S.salivarius",
                           "saprophyticus" = "S.saprophyticus", "variicola"= "K.variicola", "vulgatus" = "B.vulgatus")
-  
   
   #set color
   colourCount = length(unique(p3$Genus))
