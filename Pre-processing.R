@@ -1,5 +1,4 @@
-# Script for pre-processing phyloseq object
-
+# Scripts for pre-processing phyloseq object
 #-----------------------------------------------------------------------------------------------------
 # Load packages  ----
 #-----------------------------------------------------------------------------------------------------
@@ -16,12 +15,12 @@ library(microbiome)
 #-----------------------------------------------------------------------------------------------------
 # Remove the taxa apart from bacteria  ----
 #-----------------------------------------------------------------------------------------------------
-BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & controls)
-## phyloseq-class experiment-level object
-## otu_table()   OTU Table:         [ 5464 taxa and 540 samples ]
-## sample_data() Sample Data:       [ 540 samples by 79 sample variables ]
-## tax_table()   Taxonomy Table:    [ 5464 taxa by 7 taxonomic ranks ]
-## refseq()      DNAStringSet:      [ 5464 reference sequences ]
+BEAMING_phy <- readRDS("BEAMING_phy.RDS") # this phyloseq includes 16S rRNA samples for BEAMING study (540 samples from SA and Nigerian samples & pc/nc controls)
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 5464 taxa and 540 samples ]
+#sample_data() Sample Data:       [ 540 samples by 75 sample variables ]
+#tax_table()   Taxonomy Table:    [ 5464 taxa by 7 taxonomic ranks ]
+#refseq()      DNAStringSet:      [ 5464 reference sequences ]
 
 ## any samples with no OTU
 any(taxa_sums(BEAMING_phy) == 0)  # TRUE
@@ -94,8 +93,8 @@ total = median(sample_sums(PC_phy2))
 standf = function(x, t=total) round(t * (x / sum(x)))
 PC_phy2.std = transform_sample_counts(PC_phy2, standf) # standarized phyloseq object
 
-sample_sums(PC_phy2)  # before standarize
-sample_sums(PC_phy2.std)  # after standarize
+sample_sums(PC_phy2) # before standarize
+sample_sums(PC_phy2.std) # after standarize
 
 # plot
 plot_bar(PC_phy2.std, x="PID", fill="Phylum")
@@ -106,16 +105,10 @@ plot_bar(PC_phy2.std, x="PID", fill="Genus")
 plot_bar(PC_phy2.std, x="PID", fill="Species")
 
 #-----------------------------------------------------------------------------------------------------
-#  remove potential contamination by "decontam"  ----
+# Remove potential contamination by "decontam"  ----
 #-----------------------------------------------------------------------------------------------------
 # followed decontam tutorial: https://benjjneb.github.io/decontam/vignettes/decontam_intro.html
 BEAMING_phy3 
-
-#phyloseq-class experiment-level object
-#otu_table()   OTU Table:         [ 4341 taxa and 540 samples ]
-#sample_data() Sample Data:       [ 540 samples by 80 sample variables ]
-#tax_table()   Taxonomy Table:    [ 4341 taxa by 7 taxonomic ranks ]
-#refseq()      DNAStringSet:      [ 4341 reference sequences ]
 
 ## ----see-meta-table--------------------------------------------------------
 head(sample_data(BEAMING_phy3))
@@ -143,7 +136,7 @@ table(contamdf.prev$contaminant) # whether they are contaminant or not (true/fal
 
 rownames(contamdf.prev)[contamdf.prev$contaminant == "TRUE"] # list of contaminant ASVs
 tax_table(BEAMING_phy3) [17] # Staphylococcus sciuri
-tax_table(BEAMING_phy3) [2633] #Cyanobacteriia  (class) Chloroplast (order)
+tax_table(BEAMING_phy3) [2633] # Cyanobacteriia  (class) Chloroplast (order)
 
 ## ----prevalence-05---------------------------------------------------------
 # stricter filtering with threshold 0.5
@@ -160,7 +153,7 @@ tax_table(BEAMING_phy3) [17]  # Staphylococcus sciuri
 tax_table(BEAMING_phy3) [50]  # Bifidobacterium breve
 tax_table(BEAMING_phy3) [963] # Staphylococcus sciuri
 tax_table(BEAMING_phy3) [1776]  # Halomonas nitritophilus
-tax_table(BEAMING_phy3) [2633]  #Cyanobacteriia  (class) Chloroplast (order)
+tax_table(BEAMING_phy3) [2633]  # Cyanobacteriia  (class) Chloroplast (order)
 
 ## ----see-prev-05-----------------------------------------------------------
 # Make phyloseq object of presence-absence in negative controls and true samples
@@ -173,18 +166,13 @@ df.pa <- data.frame(pa.pos=taxa_sums(ps.pa.pos), pa.neg=taxa_sums(ps.pa.neg),
                     contaminant=contamdf.prev$contaminant)
 df.pa[1:10,]
 
-#  with annotation
+# with annotation
 ggplot(data=df.pa, aes(x=pa.neg, y=pa.pos, color=contaminant)) +
   geom_point() + xlab("Prevalence (Negative Controls)") + ylab("Prevalence (True Samples)")+
   geom_text_repel(aes(label = rownames(df.pa)))
 
 ## ----remove----------------------------------------------------------------
 BEAMING_phy3  #4341 taxa (before removing the contaminant)
-#phyloseq-class experiment-level object
-#otu_table()   OTU Table:         [ 4341 taxa and 540 samples ]
-#sample_data() Sample Data:       [ 540 samples by 81 sample variables ]
-#tax_table()   Taxonomy Table:    [ 4341 taxa by 7 taxonomic ranks ]
-#refseq()      DNAStringSet:      [ 4341 reference sequences ]
 
 BEAMING_phy3.noncontam <- prune_taxa(!contamdf.prev05$contaminant, BEAMING_phy3)
 BEAMING_phy3.noncontam # 4335 taxa (after removing the contaminant)
@@ -200,11 +188,6 @@ Samples_toRemove <- append(Samples_toRemove,c("M33-PC","M35-PC","M37-PC",
                                               "N0240BBAS2","N0267BV5","N0319BV5","N0314BV5")) 
 
 BEAMING_phy4 <- subset_samples(BEAMING_phy3.noncontam, !(Sample_ID2 %in% Samples_toRemove))  
-#phyloseq-class experiment-level object
-#otu_table()   OTU Table:         [ 4335 taxa and 442 samples ]
-#sample_data() Sample Data:       [ 442 samples by 81 sample variables ]
-#tax_table()   Taxonomy Table:    [ 4335 taxa by 7 taxonomic ranks ]
-#refseq()      DNAStringSet:      [ 4335 reference sequences ]
 
 #-----------------------------------------------------------------------------------------------------
 #  standardise and filtering, prepare for the analysis ----
@@ -223,13 +206,6 @@ Phy.f_std = filter_taxa(Phy.std, function(x) sum(x > 10) > (0.2*length(x)) | sum
 ntaxa(Phy.std) #  4335 
 ntaxa(Phy.f_std) #  2084 
 
-Phy.f_std
-#phyloseq-class experiment-level object
-#otu_table()   OTU Table:         [ 2084 taxa and 442 samples ]
-#sample_data() Sample Data:       [ 442 samples by 81 sample variables ]
-#tax_table()   Taxonomy Table:    [ 2084 taxa by 7 taxonomic ranks ]
-#refseq()      DNAStringSet:      [ 2084 reference sequences ]
-
 #saveRDS(Phy.f_std, "Phy.f_std.RDS")
 #Phy.f_std <- readRDS("Phy.f_std.RDS") # use this for downstream analysis
 
@@ -239,7 +215,7 @@ Phy.f_std
 #-----------------------------------------------------------------------------------------------------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 
-#Cluster into PAMs
+# Cluster into PAMs
 otu_table(Phy.f_std) <- t(otu_table(Phy.f_std))
 
 phy.obj.rel <- Phy.f_std
@@ -254,11 +230,11 @@ evs <- ord$value$Eigenvalues
 print(evs[1:20])
 print(tail(evs))
 
-#remove those below magnitude of largest negative eignevalue
+# remove those below magnitude of largest negative eignevalue
 h_sub10 <- hist(evs[10:length(evs)], 100)
 plot(h_sub10$mids, h_sub10$count, log="y", type='h', lwd=10, lend=2)
 
-#gap statistic for cluter number
+# gap statistic for cluter number
 NDIM <- 7 #11 falls below mag of largest neg eig
 x <- ord$vectors[,1:NDIM]  # rows=sample, cols=MDS axes, entries = value
 pamPCoA = function(x, k) {
@@ -279,7 +255,7 @@ p1
 K <- 3
 x <- ord$vectors[,1:NDIM]
 clust <- as.factor(pam(x, k=K, cluster.only=T))
-#add to sample data
+# add to sample data
 sample_data(phy.obj.rel)$PAM_3 <- clust
 PAMs <- as.character(seq(K))
 
@@ -287,7 +263,7 @@ PAMs <- as.character(seq(K))
 K <- 4
 x <- ord$vectors[,1:NDIM]
 clust <- as.factor(pam(x, k=K, cluster.only=T))
-#add to sample data
+# add to sample data
 sample_data(phy.obj.rel)$PAM_4 <- clust
 PAMs <- as.character(seq(K))
 
@@ -295,15 +271,15 @@ PAMs <- as.character(seq(K))
 K <- 5
 x <- ord$vectors[,1:NDIM]
 clust <- as.factor(pam(x, k=K, cluster.only=T))
-#add to sample data
+# add to sample data
 sample_data(phy.obj.rel)$PAM_5 <- clust
 PAMs <- as.character(seq(K))
 
-#k=6
+# k=6
 K <- 6
 x <- ord$vectors[,1:NDIM]
 clust <- as.factor(pam(x, k=K, cluster.only=T))
-#add to sample data
+# add to sample data
 sample_data(phy.obj.rel)$PAM_6 <- clust
 PAMs <- as.character(seq(K))
 
@@ -311,7 +287,7 @@ PAMs <- as.character(seq(K))
 K <- 7
 x <- ord$vectors[,1:NDIM]
 clust <- as.factor(pam(x, k=K, cluster.only=T))
-#add to sample data
+# add to sample data
 sample_data(phy.obj.rel)$PAM_7 <- clust
 PAMs <- as.character(seq(K))
 
@@ -343,7 +319,6 @@ plot_ordination(phy.obj.rel, ord, color="PAM_6") + PAMColorScale
 # k=7
 plot_ordination(phy.obj.rel, ord, color="PAM_7") + PAMColorScale
 
-
 ### add the cluster annotation (k=3)
 K <- 3
 x <- ord$vectors[,1:NDIM]
@@ -353,7 +328,7 @@ sample_data(Phy.f_std)$Pam3_bray <- clust   # add the annotation to phyloseq obj
 levels(sample_data(Phy.f_std)$Pam3_bray) <- c("1"="Cluster1","2"="Cluster2","3"="Cluster3")
 
 # save the PAM cluter info
-#saveRDS(Phy.f_std, "Phy.f_std.RDS")
+# saveRDS(Phy.f_std, "Phy.f_std.RDS")
 
 #-----------------------------------------------------------------------------------------------------
 # Shannon diversity info ----
@@ -363,6 +338,4 @@ tab <- microbiome::alpha(Phy.f_std, index = "shannon")
 sample_data(Phy.f_std)$Shannon <- tab$diversity_shannon 
 
 # save the shannon diversity info info
-#saveRDS(Phy.f_std, "Phy.f_std.RDS")
-
-
+# saveRDS(Phy.f_std, "Phy.f_std.RDS")
