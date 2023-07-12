@@ -25,8 +25,7 @@ statetable.msm(Pam3_bray, PID, data = df) # transition of the cluster from one t
 
 df$Pam3_bray <- forcats::fct_recode(df$Pam3_bray, "Cluster 1 " = "1", "Cluster 2 " = "2", "Cluster 3 " = "3")
 
-Fig2C <- ggplot(as.data.frame(df), 
-                 aes(x = Visit, stratum = Pam3_bray, alluvium = PID, fill = Pam3_bray)) + 
+Fig2C <- ggplot(as.data.frame(df), aes(x = Visit, stratum = Pam3_bray, alluvium = PID, fill = Pam3_bray)) + 
   geom_alluvium(aes(fill = Pam3_bray), width = 1/16) + 
   geom_stratum(width = 1/3, alpha = .8) + 
   geom_label(stat = "stratum", aes(label = after_stat(stratum))) + 
