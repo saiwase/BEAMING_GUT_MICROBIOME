@@ -64,12 +64,10 @@ statetable.msm(Pam3_bray, PID, data = df)
 
 df$Pam3_bray <- forcats::fct_recode(df$Pam3_bray, "Cluster 1 " = "1", "Cluster 2 " = "2", "Cluster 3 " = "3")
 
-Fig4SD = ggplot(data = as.data.frame(df), 
-                             aes(x = Visit, stratum = Pam3_bray, alluvium = PID)) + 
-  facet_wrap(~Study_site) + 
+Fig4SD = ggplot(data = as.data.frame(df), aes(x = Visit, stratum = Pam3_bray, alluvium = PID)) + 
+  facet_wrap(~Study_site) + theme_bw() + geom_stratum(width = 1/2.5) +
   geom_alluvium(aes(fill = Status2), width = 1/16) + 
   scale_fill_manual(values = c("#B05A7A", "#F99417")) + 
-  geom_stratum(width = 1/2.5) + theme_bw() + 
   geom_text(stat = "stratum", size = 5, aes(label = after_stat(stratum))) + 
   scale_x_discrete(limits = c("Week 1", "Week 15"), expand = c(0.15, 0.05)) + 
   guides(fill = guide_legend(title = "Exposure status")) + 
