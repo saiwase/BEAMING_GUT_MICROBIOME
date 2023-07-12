@@ -30,7 +30,6 @@ glmnet.fun <- function(){
   meta_general <- current_meta  %>% dplyr::select(PID, Status2, Study_site) %>% unique()
   
   # <Rank-transformed ASV >
-  # in order to calculate the difference, filter only PIDs that have two time points
   Phy.f_std <- readRDS("Phy.f_std.RDS")
   meta <- data.frame(sample_data(Phy.f_std))
   PID.of.interest <- meta$PID[duplicated(meta$PID)] # PIDs with two time points
