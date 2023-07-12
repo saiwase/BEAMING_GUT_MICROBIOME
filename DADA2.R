@@ -15,7 +15,6 @@ library(phangorn)
 # DADA2 for BEAMING samples  ----
 #-----------------------------------------------------------------------------------------------------
 # followed the DADA2 tutorial: https://benjjneb.github.io/dada2/tutorial.html
-
 path <- "/path/to/fastq.files/"   # define the path
 list.files(path)  #list the file names
 
@@ -70,7 +69,7 @@ plotErrors(errF, nominalQ = TRUE)
 dadaFs <-dada(filtFs, err = errF, multithread = TRUE)
 dadaRs <-dada(filtRs, err = errR, multithread = TRUE)
 
-# inspecting the result
+# inspect the result
 dadaFs[[1]] 
 
 #-----------------------------------------------------------------------------------------------------
