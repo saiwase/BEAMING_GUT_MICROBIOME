@@ -104,7 +104,6 @@ Fig.1A <- heatmap_stand_otu(Phy.f_std_W1_merge2)
 Fig.1A  
 
 
-
 ### Fig.S4C  -------
 heatmap_stand_otu <- function(physeq) {
   set.seed(2)
