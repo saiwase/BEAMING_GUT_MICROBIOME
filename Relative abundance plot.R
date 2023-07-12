@@ -59,7 +59,7 @@ tax.lab <- function(otus, physeq, labrow=TRUE, merged=FALSE){
   return(labs)
 }
 
-### Fig3 (Beta diversity) -------
+### Fig3 -------
 Phy.f_std <- readRDS("Phy.f_std.RDS")
 
 barplot_stag_BEAMING_sort <- function(physeq) {
@@ -86,7 +86,6 @@ barplot_stag_BEAMING_sort <- function(physeq) {
                           "haemolyticus" = "S.haemolyticus", "longum" = "B.longum", "lutetiensis" = "S.lutetiensis", "luteus" = "M.luteus", "palustris" = "K.palustris",
                           "pentosaceus" = "P.pentosaceus", "pneumoniae" = "K.pneumoniae", "putida" = "P.putida", "quasipneumoniae" = "K.quasipneumoniae", "salivarius" = "S.salivarius",
                           "saprophyticus" = "S.saprophyticus", "variicola"= "K.variicola", "vulgatus" = "B.vulgatus")
-  
   #set color
   colourCount = length(unique(p3$Genus))
   getPalette = colorRampPalette(brewer.pal(8, "Accent"))  
