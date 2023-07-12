@@ -28,8 +28,6 @@ Fig1_B
 
 ### alpha diversity - adjusted for sequencing batch or demographic factors that significantly differed between countries
 Df <- data.frame(sample_data(Phy.f_std_W1))
-names(Df)
-
 Df2 <- Df %>% select(Shannon, Study_site, SequenceLot, Education, Occupation, Houses, Refrigerator, 
                      Running_water, Marital_status, Num_Preg, Mum_weight, Mum_Age, Ges_age, DeliverVag) %>% tibble()%>% na.omit()
 
@@ -130,7 +128,6 @@ Fig2B = p1 + theme_bw() +
 
 Fig2B
 
-
 ### PERMANOVA
 diss <- phyloseq::distance(Phy.f_std, "bray", parallel = TRUE)
 Phy.f_std_df <- data.frame(row.names = sample_names(Phy.f_std), sample_data(Phy.f_std)) 
@@ -209,6 +206,7 @@ FigS2B = p1 + theme_bw() + theme(axis.text = element_text(size = 15, face = "bol
   guides(color = guide_legend(title = "Study site")) 
 
 FigS2B
+
 
 ### PERMANOVA 
 diss <- phyloseq::distance(Phy.f_std_EBF_W15, "bray", parallel = TRUE)  
